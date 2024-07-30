@@ -20,6 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pages/', include('django.contrib.flatpages.urls')),
-    path('board/', include('mmorpg_board.urls')),
-    path('accounts/', include("allauth.urls")),
+    path('board/', include('board.urls')),
+    path('accounts/', include('allauth.urls')),
 ]

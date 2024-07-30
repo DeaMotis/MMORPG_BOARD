@@ -76,16 +76,24 @@ class CommentDetail(PermissionRequiredMixin, DetailView):
     template_name = 'comment_detail.html'
     context_object_name = 'one_comment'
     success_url = reverse_lazy('post')
-    permission_required = 'board.add_post'
 
 
 class CommentDelete(DeleteView):
-    pass
+    model = Response
+    template_name = 'comment_delete.html'
+    context_object_name = 'delete_comment'
+    success_url = reverse_lazy('post')
 
 
 class CommentEdit(UpdateView):
-    pass
+    model = Response
+    template_name = 'comment_edit.html'
+    context_object_name = 'edit_comment'
+    success_url = reverse_lazy('post')
 
 
 class AddComment(PermissionRequiredMixin, CreateView):
-    pass
+    model = Response
+    template_name = 'add_comment.html'
+    context_object_name = 'add_comment'
+    success_url = reverse_lazy('post')
