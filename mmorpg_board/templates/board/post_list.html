@@ -1,72 +1,61 @@
-{% load custom_extras %}
-{% extends 'flatpages/default.html' %}
-{% load custom_filters %}
-{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board</title>
+</head>
+<body>
+    <h1>Все посты</h1>
+    <h3>{{ filterset.qs|length }} постов</h3>
 
-{% block title %}
-News
-{% endblock title %}
-
-{% block content %}
-   <h1>Все посты</h1>
-   <h3>{{ Posts|length }}</h3>
-
-   <form action="" method="get">
+    <form action="" method="get">
         {{ filterset.form.as_p }}
         <input type="submit" value="Найти" />
     </form>
     <hr>
-    {% if perms.newapp.add_post %}
-    <a href="{% url 'post_create' %}">Add post</a>
+    {% if perms.board.add_post %}
+        <a href="{% url 'post_create' %}">Добавить пост</a>
     {% endif %}
-    {% if Posts %}
+
+    {% if posts %}
         <table>
             <tr>
-                <td> <b>Заголовок</b> </td>
-                <td> <b>Дата публикации</b> </td>
-                <td> <b>Текст</b> </td>
-                <td> <b>Категория</b> </td>
-                {% if perms.newapp.change_post or perms.newapp.delete_post %}
-                <td> <b>Действия</b> </td>
+                <td><b>Заголовок</b></td>
+                <td><b>Дата публикации</b></td>
+                <td><b>Текст</b></td>
+                <td><b>Категория</b></td>
+                {% if perms.board.change_post or perms.board.delete_post %}
+                    <td><b>Действия</b></td>
                 {% endif %}
             </tr>
-
-            {% for post in Posts %}
-            <tr>
-                <td>{{ post.title|censor }}</td>
-                <td>{{ post.dateCreation|date:'d M Y' }}</td>
-                <td>{{ post.text|censor|truncatewords:20 }}</td>
-                <td>{{ post.categoryType }}</td>
-                <td><a href="{% url 'post_detail' post.id %}">Read more</a></td>
-                {% if post.categoryType == 'NW' %}
-                    <td><a href="{% url 'post_edit' post.id %}">Edit</a></td>
-                    <td><a href="{% url 'post_delete' post.id %}">Delete</a></td>
-                {% else %}
-                    <td><a href="{% url 'article_edit' post.id %}">Edit</a></td>
-                    <td><a href="{% url 'article_delete' post.id %}">Delete</a></td>
-                {% endif %}
-
-            </tr>
+            {% for post in posts %}
+                <tr>
+                    <td>{{ post.title }}</td>
+                    <td>{{ post.dateCreation|date:'d M Y' }}</td>
+                    <td>{{ post.text|truncatewords:20 }}</td>
+                    <td>{{ post.category }}</td>
+                    <td>{{ post.id }}</td>
+                    <td><a href="{% url 'post_detail' post.id %}">Читать далее</a></td>
+                </tr>
             {% endfor %}
         </table>
     {% else %}
         <h2>Постов нет!</h2>
     {% endif %}
-    {% if page_obj.has_previous %}
-        <a href="?page=1">1</a>
-        {% if page_obj.previous_page_number != 1 %}
-           ...
-           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+
+    <div class="paginator">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">1</a>
+            {% if page_obj.previous_page_number != 1 %}
+                ...
+                <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+            {% endif %}
         {% endif %}
-   {% endif %}
-
-   {{ page_obj.number }}
-
-   {% if page_obj.has_next %}
-       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
-       {% if paginator.num_pages != page_obj.next_page_number %}
-           ...
-           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-       {% endif %}
-   {% endif %}
-{% endblock content %}
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -24,7 +24,6 @@ class PostForm(forms.ModelForm):
             'author': 'author',
         }
 
-
     def clean(self):
         cleaned_data = super().clean()
         text = cleaned_data.get("description")
