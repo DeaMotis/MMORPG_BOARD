@@ -1,16 +1,21 @@
 from django.urls import path
-from .views import PostList, PostItem, PostCreate, PostEdit, PostDelete, CommentList, CommentDetail, CommentEdit, \
-    CommentDelete, AddComment
+
+from . import views
+from .views import PostList, PostItem, PostCreate, PostEdit, PostDelete, CommentDetail, CommentEdit, \
+    CommentDelete, AddComment, Index, Responses_List, AcceptResponseView
+
 
 urlpatterns = [
     path('', PostList.as_view(), name='post_list'),
     path('<int:pk>/', PostItem.as_view(), name='post_detail'),
+    path('index/', Index.as_view(), name='index'),
+    path('upload/', views.image_upload_view, name='image_upload'),
 
     path('create/', PostCreate.as_view(), name='post_create'),
     path('<int:pk>/edit/', PostEdit.as_view(), name='post_edit'),
     path('<int:pk>/delete/', PostDelete.as_view(), name='post_delete'),
 
-    path('responses/', CommentList.as_view(), name='comments'),
+    path('responses/', Responses_List.as_view(), name='comments'),
     # Список комментариев по адресу /board/responses/
     path('response/<int:pk>/', CommentDetail.as_view(), name='one_comment'),
     # Детали комментария по адресу /board/response/<id>/
@@ -20,5 +25,7 @@ urlpatterns = [
     # Удаление комментария по адресу /board/response/<id>/delete/
     path('response/create/', AddComment.as_view(), name='add_comment'),
     # Добавление комментария по адресу /board/response/create/
+
+    path('response/accept/<int:pk>/', AcceptResponseView.as_view(), name='accept_response'),
 ]
 

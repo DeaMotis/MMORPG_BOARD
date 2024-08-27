@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.views.generic import CreateView
 
-from .models import Post
+from .models import Post, Response
 
 
 class PostForm(forms.ModelForm):
@@ -15,12 +15,13 @@ class PostForm(forms.ModelForm):
             'text',
             'category',
             'author',
+            'image',
         ]
 
         labels = {
             'title': 'Title',
             'text': 'Text',
-            'postCategory': 'Category',
+            'category': ' category',
             'author': 'author',
         }
 
@@ -46,3 +47,24 @@ class PostForm(forms.ModelForm):
 
     def __str__(self):
         return self.user.username
+
+
+class RespondForm(forms.ModelForm):
+    class Meta:
+        model = Response
+        fields = ('text',)
+
+    def __init__(self, *args, **kwargs):
+        super(RespondForm, self).__init__(*args, **kwargs)
+        self.fields['text'].label = "Текст отклика:"
+
+
+class ResponsesFilterForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super(ResponsesFilterForm, self).__init__(*args, **kwargs)
+        self.fields['title'] = forms.ModelChoiceField(
+            label='Объявление',
+            queryset=Post.objects.filter(author_id=user.id).order_by('-dateCreation').values_list('title', flat=True),
+            empty_label="Все",
+            required=False
+        )

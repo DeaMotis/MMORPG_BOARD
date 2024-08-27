@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'default.html' %}
+{% load bootstrap4 %}
+{% block title %}Edit{% endblock title %}
+{% load static %}
 
-</body>
-</html>
+{% block content %}
+    <br>
+    <h3>Редактирование объявления:</h3><br>
+	<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+        {{ form.media }}
+        {{ form.as_p }}
+		<input class="btn btn-secondary" type="submit" value="Сохранить">
+	</form><br>
+    <input type=button value="Назад" class="btn btn-secondary" onClick="javascript:history.go(-1);">
+{% endblock content %}

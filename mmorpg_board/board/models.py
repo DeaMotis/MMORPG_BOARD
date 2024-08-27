@@ -19,19 +19,23 @@ class Post(models.Model):
     title = models.CharField(max_length=128, verbose_name='Заголовок')
     text = models.TextField()
     dateCreation = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='posts/', null=True, blank=True, verbose_name='Изображение')
 
     def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.id = None
+        super().__init__(*args, **kwargs)
 
-    def get_absolute_url(self):
-        return reverse('post', kwargs={'id': self.id, 'name': self.name})
 
     def __str__(self):
         return self.title
+
+
 class Response(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     text = models.TextField(verbose_name='Текст')
-    status = models.BooleanField(default=False)
-    dateCreation = models.DateTimeField(auto_now_add=True)
+    ad = models.ForeignKey(Post, on_delete=models.CASCADE)
+    message = models.TextField(default="Нет сообщения")
+    created_at = models.DateTimeField(auto_now_add=True)
+    accepted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Response for {self.ad.title} by {self.user.username}"

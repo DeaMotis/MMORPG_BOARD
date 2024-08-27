@@ -1,33 +1,31 @@
-{% extends 'default.html' %}
+{% extends 'flatpages/default.html' %}
 
-{% block title %}Ad{% endblock title %}
+{% block title %}{{ post.title }}{% endblock title %}
 
 {% block content %}
     <br><br>
-    {% autoescape off %}
-    <h2>{{ post.title }}</h2><br>
+    <h2>{{ post.title }}</h2>
     <span>{{ post.text }}<br></span>
-    {% endautoescape %}
     <hr>
     <span>| Автор: {{ post.author }}</span>
     <span>| Категория: {{ post.get_category_display }}</span>
-    <span>| Дата публикации: {{ post.dateCreation|date:'d-M-Y f' }}</span>
+    <span>| Дата публикации: {{ post.dateCreation|date:'d-M-Y H:i' }}</span>
 
     <br><br>
 
     <a class="btn btn-secondary" href="{% url 'index' %}" role="button">Закрыть</a>
-    <a class="btn btn-secondary" href="/post/{{ post.id }}/edit" role="button">Редактировать</a>
-    <a class="btn btn-secondary" href="/post/{{ post.id }}/delete" role="button">Удалить</a>
+    <a class="btn btn-secondary" href="{% url 'post_edit' post.id %}" role="button">Редактировать</a>
+    <a class="btn btn-danger" href="{% url 'post_delete' post.id %}" role="button">Удалить</a>
 
     {% if user.is_authenticated %}
     <br><br>
         {% if respond == "Откликнулся" %}
-            <a style="color:red">Вы откликнулись на это объявление.</a><br>
+            <span style="color:red">Вы откликнулись на это объявление.</span><br>
             <a href="{% url 'responses' %}">Посмотреть свои отклики</a>
         {% elif respond == "Мое_объявление" %}
-            <a style="color:red">Вы не можете откликнуться на свое объявление.</a><br>
+            <span style="color:red">Вы не можете откликнуться на свое объявление.</span><br>
         {% else %}
-            <a class="btn btn-secondary" href="/respond/{{ post.id }}" role="button">Откликнуться</a>
+            <a class="btn btn-secondary" href="{% url 'respond' post.id %}" role="button">Откликнуться</a>
         {% endif %}
     {% endif %}
     <br><br>

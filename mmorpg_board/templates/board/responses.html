@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'flatpages/default.html' %}
 
-</body>
-</html>
+{% block content %}
+<h2>Мои отклики</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Объявление</th>
+            <th>Сообщение</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for application in object_list %}
+        <tr>
+            <td>{{ application.ad.title }}</td>
+            <td>{{ application.message }}</td>
+            <td>{{ application.accepted|yesno:"Принят,Не принят" }}</td>
+            <td>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="application_id" value="{{ application.id }}">
+                    <button type="submit" name="delete_application">Удалить</button>
+                </form>
+                {% if not application.accepted %}
+                <form method="post" action="{% url 'accept_application' application.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Принять</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
